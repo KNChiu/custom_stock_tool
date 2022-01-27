@@ -16,7 +16,7 @@ class StockTool():
     def crawler2pandas(self):
         yf.pdr_override()                       # 以 pandasreader格式
 
-        date_range = self.dateRange
+        date_range = self.dateRange             # 繼承區間
         start_date = datetime(int(date_range[0:4]), int(date_range[5:6]), int(date_range[7:8]))         # 日期解析
         end_date = datetime(int(date_range[9:13]), int(date_range[14:15]), int(date_range[16:17]))
 
@@ -29,4 +29,4 @@ class StockTool():
 
 if __name__ == '__main__':
     st_tool = StockTool()
-    print(st_tool.crawler2pandas())
+    print(st_tool.crawler2pandas())             # 顯示 pandas 
