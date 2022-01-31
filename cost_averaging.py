@@ -1,3 +1,5 @@
+#%%
+
 from backtesting import Backtest, Strategy      # 引入回測和交易策略功能
 
 class Costaveraging(Strategy): 
@@ -23,11 +25,11 @@ if __name__ == '__main__':
     target_stock='0050.tw'
     date_range = "20200101-20220128"
 
-    st_tool = StockTool(target_stock='0050.tw', date_range = "20200101-20220128")
+    st_tool = StockTool(target_stock='0050.tw', date_range = "19990101-20220128")
     df = st_tool.crawler2pandas()
     # st_tool.crawler2CSV()
 
-    test = Backtest(df, Costaveraging, cash=75000, commission=.004)
+    test = Backtest(df, Costaveraging, cash=510000, commission=.004)
     # 指定回測程式為test，在Backtest函數中依序放入(資料來源、策略、現金、手續費)
 
     result = test.run()
