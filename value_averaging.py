@@ -14,9 +14,11 @@ class ValueAveraging(Strategy):
         self.actualValue = 0        # 實際價值
         self.sumShares = 0          # 股數總和
         self.cashSurplus = 0        # 現金盈餘
+        self.cashSurplusSum = 0     # 現金盈餘總和
 
         self.buySharessize = 0      # 買入數量
         self.sellSharessize = 0     # 賣出數量
+
 
 
     def next(self):
@@ -41,6 +43,7 @@ class ValueAveraging(Strategy):
                     self.sellSharessize = (self.actualValue - self.expectedValue) // self.data.Close[-1]
                     self.sell(size = self.sellSharessize)            # 賣出多餘股數
                     self.cashSurplus = self.sellSharessize * self.data.Close[-1]
+                    self.cashSurplusSum += self.cashSurplus
                     self.sumShares -= self.sellSharessize
 
                 elif self.actualValue < self.expectedValue :
@@ -48,10 +51,12 @@ class ValueAveraging(Strategy):
                     self.buy(size = self.buySharessize)              # 買入不足股數
                     self.sumShares += self.buySharessize
 
-            print("股票價值 :", round(self.sumShares * self.data.Close[-1]), "現金盈餘 :", round(self.cashSurplus))
-            print("購買股數 :", self.buySharessize)
+            print("股票價值 :", round(self.sumShares * self.data.Close[-1]), "盈餘總和 :", round(self.cashSurplusSum))
+            print("購買股數 :", round(self.buySharessize), "賣出股數 :", round(self.sellSharessize))
             print("-----------------------------")
 
+            self.buySharessize = 0
+            self.sellSharessize = 0
 
             self.mounthCont += 1
 
