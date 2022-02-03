@@ -4,10 +4,10 @@ from backtesting import Backtest, Strategy      # 引入回測和交易策略功
 
 class Costaveraging(Strategy): 
     mounthCost = 5000       # 定期定額金額
-    dayContcycle = 30       # 定期定額週期
+    dayContcycle = 20       # 定期定額週期(一週交易5天 一個月20天)
     
     def init(self):
-        self.dayCont = 0             
+        self.dayCont = 1            
         pass
 
     def next(self):
@@ -25,7 +25,7 @@ if __name__ == '__main__':
     target_stock='0050.tw'
     date_range = "20200101-20220128"
 
-    st_tool = StockTool(target_stock='0050.tw', date_range = "19990101-20220128")
+    st_tool = StockTool(target_stock=target_stock, date_range = date_range)
     df = st_tool.crawler2pandas()
     # st_tool.crawler2CSV()
 

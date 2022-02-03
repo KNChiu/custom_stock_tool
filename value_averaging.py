@@ -3,11 +3,11 @@ from backtesting import Backtest, Strategy      # 引入回測和交易策略功
 
 class ValueAveraging(Strategy): 
     mounthCost = 5000       # 定期定額金額
-    dayContcycle = 30       # 定期定額週期
+    dayContcycle = 20       # 定期定額週期(一週交易5天 一個月20天)
     
     
     def init(self):
-        self.dayCont = 0            # 天數計數
+        self.dayCont = 1            # 天數計數
         self.mounthCont = 1         # 週期計數
 
         self.expectedValue = 0      # 預期價值
@@ -26,11 +26,10 @@ class ValueAveraging(Strategy):
         if self.dayCont >= self.dayContcycle:    # 當到了定期購買週期
             self.dayCont = 0
 
-            print("第N次交易 :", self.mounthCont)
-
             self.expectedValue = self.mounthCont * self.mounthCost
             self.actualValue = self.sumShares * self.data.Close[-1]
 
+            print("第N次交易 :", self.mounthCont, "股票數量 :", self.sumShares)
             print("預期價值 :", self.expectedValue, "實際價值 :", round(self.actualValue))
 
             if self.expectedValue ==  0:                  # 第一次購入
@@ -67,13 +66,13 @@ if __name__ == '__main__':
     from trading_tool.model import StockTool
 
     target_stock='0050.tw'
-    date_range = "20200101-20220128"
+    date_range = "20170101-20211231"
 
-    st_tool = StockTool(target_stock='0050.tw', date_range = "19990101-20211231")
+    st_tool = StockTool(target_stock=target_stock, date_range = date_range)
     df = st_tool.crawler2pandas()
     # st_tool.crawler2CSV()
 
-    test = Backtest(df, ValueAveraging, cash=510000, commission=.004)
+    test = Backtest(df, ValueAveraging, cash=235000, commission=.004)
     # 指定回測程式為test，在Backtest函數中依序放入(資料來源、策略、現金、手續費)
 
     result = test.run()
