@@ -22,7 +22,7 @@ class Costaveraging(Strategy):
 if __name__ == '__main__':
     from trading_tool.model import StockTool
 
-    target_stock='0050.tw'
+    target_stock='QQQ'
     date_range = "20200101-20220128"
 
     st_tool = StockTool(target_stock=target_stock, date_range = date_range)

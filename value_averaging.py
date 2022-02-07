@@ -9,6 +9,7 @@ class ValueAveraging(Strategy):
     def init(self):
         self.dayCont = 1            # 天數計數
         self.mounthCont = 1         # 週期計數
+        self.canSell = False         # 是否要將盈餘取出
 
         self.expectedValue = 0      # 預期價值
         self.actualValue = 0        # 實際價值
@@ -28,7 +29,7 @@ class ValueAveraging(Strategy):
             self.expectedValue = self.mounthCont * self.mounthCost
             self.actualValue = self.sumShares * self.data.Close[-1]
 
-            print("第N次交易 :", self.mounthCont, "股票數量 :", self.sumShares)
+            print("第次交易 :", self.mounthCont, "股票數量 :", self.sumShares)
             print("預期價值 :", self.expectedValue, "實際價值 :", round(self.actualValue))
 
             if self.expectedValue ==  0:                  # 第一次購入
@@ -37,7 +38,7 @@ class ValueAveraging(Strategy):
                 self.sumShares += self.buySharessize
 
             else:
-                if self.actualValue > self.expectedValue :      # 如果實際價值大於預計價值
+                if self.actualValue > self.expectedValue and self.canSell:      # 如果實際價值大於預計價值
                     self.sellSharessize = (self.actualValue - self.expectedValue) // self.data.Close[-1]
                     if self.sellSharessize >= 1:                    # 確保不為0
                         self.sell(size = self.sellSharessize)            # 賣出多餘股數
@@ -66,7 +67,7 @@ class ValueAveraging(Strategy):
 if __name__ == '__main__':
     from trading_tool.model import StockTool
 
-    target_stock='QQQ'
+    target_stock='VTI'
     date_range = "20170101-20211231"
 
     st_tool = StockTool(target_stock=target_stock, date_range = date_range)
