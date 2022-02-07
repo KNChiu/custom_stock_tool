@@ -2,7 +2,7 @@
 from backtesting import Backtest, Strategy      # 引入回測和交易策略功能
 
 class ValueAveraging(Strategy): 
-    mounthCost = 5000       # 定期定額金額
+    mounthCost = 400       # 定期定額金額
     dayContcycle = 20       # 定期定額週期(一週交易5天 一個月20天)
     
     
@@ -18,7 +18,6 @@ class ValueAveraging(Strategy):
 
         self.buySharessize = 0      # 買入數量
         self.sellSharessize = 0     # 賣出數量
-
 
 
     def next(self):
@@ -40,14 +39,16 @@ class ValueAveraging(Strategy):
             else:
                 if self.actualValue > self.expectedValue :      # 如果實際價值大於預計價值
                     self.sellSharessize = (self.actualValue - self.expectedValue) // self.data.Close[-1]
-                    self.sell(size = self.sellSharessize)            # 賣出多餘股數
+                    if self.sellSharessize >= 1:                    # 確保不為0
+                        self.sell(size = self.sellSharessize)            # 賣出多餘股數
                     self.cashSurplus = self.sellSharessize * self.data.Close[-1]
                     self.cashSurplusSum += self.cashSurplus
                     self.sumShares -= self.sellSharessize
 
                 elif self.actualValue < self.expectedValue :
                     self.buySharessize = (self.expectedValue - self.actualValue) // self.data.Close[-1]
-                    self.buy(size = self.buySharessize)              # 買入不足股數
+                    if self.buySharessize >= 1:                     # 確保不為0
+                        self.buy(size = self.buySharessize)              # 買入不足股數
                     self.sumShares += self.buySharessize
 
             print("股票價值 :", round(self.sumShares * self.data.Close[-1]), "盈餘總和 :", round(self.cashSurplusSum))
@@ -65,14 +66,14 @@ class ValueAveraging(Strategy):
 if __name__ == '__main__':
     from trading_tool.model import StockTool
 
-    target_stock='0050.tw'
+    target_stock='QQQ'
     date_range = "20170101-20211231"
 
     st_tool = StockTool(target_stock=target_stock, date_range = date_range)
     df = st_tool.crawler2pandas()
     # st_tool.crawler2CSV()
 
-    test = Backtest(df, ValueAveraging, cash=235000, commission=.004)
+    test = Backtest(df, ValueAveraging, cash=18800, commission=.004)
     # 指定回測程式為test，在Backtest函數中依序放入(資料來源、策略、現金、手續費)
 
     result = test.run()
